@@ -1,0 +1,7 @@
+{
+  "manifest_version": 2,
+  "name": "Open In IDE",
+  "description": "Open Chrome Devtools Files in IDE",
+  "version": "0.1",
+  "devtools_page": "openinide.html"
+}
