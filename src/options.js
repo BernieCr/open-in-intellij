@@ -64,6 +64,8 @@
 
         localStorage["rootPaths"] = JSON.stringify(rootPaths);
         loadOptions(); // reload
+
+        document.getElementById('status').innerHTML = "OK!";
     }
 
     function eraseOptions() {

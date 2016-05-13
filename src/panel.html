@@ -20,6 +20,10 @@
             opacity: .5;
         }
 
+        .disabled #content {
+            display: none;
+        }
+
         h1 {
             font-size: 36px;
             font-weight: bold;
@@ -56,6 +60,10 @@
             color: #303030;
         }
 
+        .bordered {
+            border: 1px solid #AAAAAA;
+        }
+
     </style>
 </head>
 <body>
@@ -68,8 +76,12 @@
         <div id="content">
             <div id="tutorial-container">
                 <h3>How to</h3>
-                <p>...</p>
-                <p><img src="tutorial-enable.png" /></p>
+                <p>To enable this extension, open the Developer Tools, go to Settings (F1) -&gt; General. Change the very last setting, <i>'Link Handling'</i> from <i>auto</i> to <i>Open In IntelliJ</i>
+                </p>
+                <p>
+                    <img src="tutorial-enable.png" class="bordered" width="200" height="auto" />
+                </p>
+                <p></p>
             </div>
             <div>
                 <h3>&raquo; <a id="optionslink" href="options.html#fromdevtools">Options</a></h3>

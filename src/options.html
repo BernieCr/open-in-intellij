@@ -4,9 +4,14 @@
     <script type="text/javascript" src="options.js"></script>
     <style>
 
-        div {
+        #main {
+            margin: 10px 20px 10px 10px;
+        }
+
+        #main div {
             margin-bottom: 10px;
         }
+
 
         .textfield {
             display: inline-block;
@@ -26,6 +31,11 @@
             display: none;
             font-size: 14px;
         }
+
+        #status {
+            display: inline-block;
+            margin-left: 20px;
+        }
     </style>
 </head>
 <body>
@@ -33,62 +43,65 @@
 <h1><img src="logo-128px.png"/> Open In IntelliJ</h1>
 
 <hr />
-<h2>Root Paths</h2>
-<br/>
-<div>
-    <span class="textfield"><b>Site (e.g. www.mysite.com)</b></span>
-    <span class="textfield"><b>Relative path of web document root inside your IntelliJ project (e.g. dist/www/)</b></span>
-</div>
-<div>
-    <input id="site0" class="textfield" type="text" placeholder="Site" />
-    <input id="root0" class="textfield" type="text" placeholder="Root Path" />
-</div>
-<div>
-    <input id="site1" class="textfield" type="text" placeholder="Site" />
-    <input id="root1" class="textfield" type="text" placeholder="Root Path" />
-</div>
-<div>
-    <input id="site2" class="textfield" type="text" placeholder="Site" />
-    <input id="root2" class="textfield" type="text" placeholder="Root Path" />
-</div>
-<div>
-    <input id="site3" class="textfield" type="text" placeholder="Site" />
-    <input id="root3" class="textfield" type="text" placeholder="Root Path" />
-</div>
-<div>
-    <input id="site4" class="textfield" type="text" placeholder="Site" />
-    <input id="root4" class="textfield" type="text" placeholder="Root Path" />
-</div>
-<div>
-    <input id="site5" class="textfield" type="text" placeholder="Site" />
-    <input id="root5" class="textfield" type="text" placeholder="Root Path" />
-</div>
-<div>
-    <input id="site6" class="textfield" type="text" placeholder="Site" />
-    <input id="root6" class="textfield" type="text" placeholder="Root Path" />
-</div>
-<div>
-    <input id="site7" class="textfield" type="text" placeholder="Site" />
-    <input id="root7" class="textfield" type="text" placeholder="Root Path" />
-</div>
-<div>
-    <input id="site8" class="textfield" type="text" placeholder="Site" />
-    <input id="root8" class="textfield" type="text" placeholder="Root Path" />
-</div>
-<div>
-    <input id="site9" class="textfield" type="text" placeholder="Site" />
-    <input id="root9" class="textfield" type="text" placeholder="Root Path" />
-</div>
-<div>
-    <input id="site10" class="textfield" type="text" placeholder="Site" />
-    <input id="root10" class="textfield" type="text" placeholder="Root Path" />
-</div>
 
-<div>
-<button id="saveOptions">Save</button>
-</div>
-<div id="backlink-container">
-    <a id="backlink" href="#">&laquo; Back</a>
+<div id="main">
+    <h2>Root Paths</h2>
+    <br/>
+    <div>
+        <span class="textfield"><b>Site (e.g. www.mysite.com)</b></span>
+        <span class="textfield"><b>Relative path of web document root inside your IntelliJ project (e.g. dist/www/)</b></span>
+    </div>
+    <div>
+        <input id="site0" class="textfield" type="text" placeholder="Site" />
+        <input id="root0" class="textfield" type="text" placeholder="Root Path" />
+    </div>
+    <div>
+        <input id="site1" class="textfield" type="text" placeholder="Site" />
+        <input id="root1" class="textfield" type="text" placeholder="Root Path" />
+    </div>
+    <div>
+        <input id="site2" class="textfield" type="text" placeholder="Site" />
+        <input id="root2" class="textfield" type="text" placeholder="Root Path" />
+    </div>
+    <div>
+        <input id="site3" class="textfield" type="text" placeholder="Site" />
+        <input id="root3" class="textfield" type="text" placeholder="Root Path" />
+    </div>
+    <div>
+        <input id="site4" class="textfield" type="text" placeholder="Site" />
+        <input id="root4" class="textfield" type="text" placeholder="Root Path" />
+    </div>
+    <div>
+        <input id="site5" class="textfield" type="text" placeholder="Site" />
+        <input id="root5" class="textfield" type="text" placeholder="Root Path" />
+    </div>
+    <div>
+        <input id="site6" class="textfield" type="text" placeholder="Site" />
+        <input id="root6" class="textfield" type="text" placeholder="Root Path" />
+    </div>
+    <div>
+        <input id="site7" class="textfield" type="text" placeholder="Site" />
+        <input id="root7" class="textfield" type="text" placeholder="Root Path" />
+    </div>
+    <div>
+        <input id="site8" class="textfield" type="text" placeholder="Site" />
+        <input id="root8" class="textfield" type="text" placeholder="Root Path" />
+    </div>
+    <div>
+        <input id="site9" class="textfield" type="text" placeholder="Site" />
+        <input id="root9" class="textfield" type="text" placeholder="Root Path" />
+    </div>
+    <div>
+        <input id="site10" class="textfield" type="text" placeholder="Site" />
+        <input id="root10" class="textfield" type="text" placeholder="Root Path" />
+    </div>
+
+    <div>
+    <button id="saveOptions">Save</button><span id="status"></span>
+    </div>
+    <div id="backlink-container">
+        <a id="backlink" href="#">&laquo; Back</a>
+    </div>
 </div>
 </body>
 </html>

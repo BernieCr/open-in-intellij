@@ -2,9 +2,6 @@
 
 (function() {
 
-    if (localStorage["enabled"] == "") {
-        localStorage["enabled"] = "1"; // default
-    }
 
 
     var devConsoleError = function(message) {
@@ -12,11 +9,15 @@
         messageJson = messageJson.split('\'').join('\\\'');
         messageJson = messageJson.split('\\n').join('\\\\n');
         var cmd = 'console.error(JSON.parse(\''+messageJson+'\'));';
-        console.log(cmd);
+        //console.log(cmd);
         chrome.devtools.inspectedWindow.eval(cmd);
     };
 
+    //console.log(localStorage["enabled"]);
 
+    if (typeof localStorage["enabled"] === "undefined") {
+        localStorage["enabled"] = "1"; // default
+    }
 
     // parseUri 1.2.2
     // (c) Steven Levithan <stevenlevithan.com>
@@ -75,7 +76,6 @@
                             sErrorAdd += '\nAlso make sure the file '+filePath+' can be found relative to your project root. Otherwise please map your web document root to the appropriate folder within your project. See options: chrome-extension://jeanncccmcklcoklpimhmpkgphdingci/options.html\n';
                         }
                         devConsoleError('Couldn\'t open file in IntelliJ: File not found! '+sErrorAdd+'\n(IntelliJ API Request URL: ' + url + ')');
-                        console.log('Couldn\'t open file in IntelliJ! File not found. '+sErrorAdd+'\n(IntelliJ API Request URL: ' + url + ')');
                         break;
                     default:
                         devConsoleError('Couldn\'t open file in IntelliJ! HTTP error ' + xhr.status + ' for IntelliJ API Request URL ' + url);
@@ -95,17 +95,6 @@
         xhr.send(null);
     };
 
-
-    var page_getProperties = function() {
-        var data = window.jQuery && $0 ? jQuery.data($0) : {};
-        // Make a shallow copy with a null prototype, so that sidebar does not
-        // expose prototype.
-        var props = Object.getOwnPropertyNames(data);
-        var copy = { __proto__: null };
-        for (var i = 0; i < props.length; ++i)
-            copy[props[i]] = data[props[i]];
-        return copy;
-    };
 
     
     chrome.devtools.panels.create("Open In IntelliJ", "logo-48px.png", "panel.html");
@@ -137,8 +126,11 @@
                 fileString = fileString.substr(1);
             }
 
-            var rootPaths = JSON.parse(localStorage["rootPaths"]) || {};
-            console.log(rootPaths);
+            var rootPaths = {};
+            if (typeof localStorage["rootPaths"] !== "undefined") {
+                rootPaths = JSON.parse(localStorage["rootPaths"]);
+            }
+            //console.log(rootPaths);
 
             var bHasRootPath = false;
             // nachsehen, ob wir für den aktuellen Host einen Pfad hinterlegt haben und ggf. verwenden
