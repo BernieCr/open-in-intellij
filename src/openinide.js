@@ -2,6 +2,9 @@
 
 (function() {
 
+    if (localStorage["enabled"] == "") {
+        localStorage["enabled"] = "1"; // default
+    }
 
 
     var devConsoleError = function(message) {
@@ -44,19 +47,27 @@
         return uri;
     };
 
-    var readURLContent = function(url, thisServer, filePath, bHasRootPath) {
+
+    var openInChromePanel = function(url, lineNumber) {
+        chrome.devtools.panels.openResource(url, lineNumber);
+    };
+
+
+    var readURLContent = function(url, thisServer, filePath, bHasRootPath, urlOrig, lineNumber) {
 
         var xhr = new XMLHttpRequest();
 
         var xhrEvent = function() {
+
+            var bOK = false;
+
             if (xhr.readyState == XMLHttpRequest.DONE) {
                 switch (xhr.status) {
                     case 200:
-                        // OK
-                        //devConsoleLog('Opening '+url);
+                        bOK = true;
                         break;
                     case 0:
-                        devConsoleError('Couldn\'t open file in IntelliJ! Please first start your IDE and open the project. (IntelliJ API Request URL: ' + url + ')');
+                        devConsoleError('Couldn\'t open file in IntelliJ! Please first start your IDE and open the project.\n(IntelliJ API Request URL: ' + url + ')');
                         break;
                     case 404:
                         var sErrorAdd = 'Please first open the project in your IDE.';
@@ -71,6 +82,10 @@
                         break;
                 }
                 xhr = null;
+
+                if (!bOK) {
+                    openInChromePanel(urlOrig, lineNumber);
+                }
             }
         };
 
@@ -81,46 +96,67 @@
     };
 
 
+    var page_getProperties = function() {
+        var data = window.jQuery && $0 ? jQuery.data($0) : {};
+        // Make a shallow copy with a null prototype, so that sidebar does not
+        // expose prototype.
+        var props = Object.getOwnPropertyNames(data);
+        var copy = { __proto__: null };
+        for (var i = 0; i < props.length; ++i)
+            copy[props[i]] = data[props[i]];
+        return copy;
+    };
+
+    
+    chrome.devtools.panels.create("Open In IntelliJ", "logo-48px.png", "panel.html");
+    
+    
     chrome.devtools.panels.setOpenResourceHandler(function(resource, lineNumber) {
         
         var url = resource.url;
 
-        var urlParse = parseUri(url);
-
-        var thisServer = urlParse.host+(urlParse.port ? ':'+urlParse.port: '');
-        var thisUrl = urlParse.protocol+'://'+thisServer;
-
-        var regex = new RegExp(thisUrl, 'i');
-        var filePath = url.replace(regex, ''); // http://xxx aus URL löschen => nur Dateipfad erhalten
-        var fileString = filePath;
-        if (lineNumber) {
-            fileString += ':' + lineNumber;
+        if (localStorage["enabled"] != "1") {
+            // disabled => Open in Chrome Resource Panel
+            openInChromePanel(url, lineNumber);
         }
+        else {
 
-        if (fileString[0] == '/') {
-            fileString = fileString.substr(1);
+            var urlParse = parseUri(url);
+
+            var thisServer = urlParse.host + (urlParse.port ? ':' + urlParse.port : '');
+            var thisUrl = urlParse.protocol + '://' + thisServer;
+
+            var regex = new RegExp(thisUrl, 'i');
+            var filePath = url.replace(regex, ''); // http://xxx aus URL löschen => nur Dateipfad erhalten
+            var fileString = filePath;
+            if (lineNumber) {
+                fileString += ':' + lineNumber;
+            }
+
+            if (fileString[0] == '/') {
+                fileString = fileString.substr(1);
+            }
+
+            var rootPaths = JSON.parse(localStorage["rootPaths"]) || {};
+            console.log(rootPaths);
+
+            var bHasRootPath = false;
+            // nachsehen, ob wir für den aktuellen Host einen Pfad hinterlegt haben und ggf. verwenden
+            if (rootPaths[thisServer]) {
+                fileString = rootPaths[thisServer] + fileString;
+                bHasRootPath = true;
+            }
+
+            //
+            // IntelliJ REST API!
+            // http://develar.org/idea-rest-api/
+            //
+            var ideOpenUrl = 'http://localhost:63342/api/file/' + fileString;
+
+            // devConsoleLog(ideOpenUrl);
+
+            readURLContent(ideOpenUrl, thisServer, filePath, bHasRootPath, url, lineNumber);
         }
-
-        var rootPaths = JSON.parse(localStorage["rootPaths"]) || {};
-        console.log(rootPaths);
-
-        var bHasRootPath = false;
-        // nachsehen, ob wir für den aktuellen Host einen Pfad hinterlegt haben und ggf. verwenden
-        if (rootPaths[thisServer]) {
-            fileString = rootPaths[thisServer]+fileString;
-            bHasRootPath = true;
-        }
-
-        //
-        // IntelliJ REST API!
-        // http://develar.org/idea-rest-api/
-        //
-        var ideOpenUrl = 'http://localhost:63342/api/file/'+fileString;
-
-       // devConsoleLog(ideOpenUrl);
-
-        readURLContent(ideOpenUrl, thisServer, filePath, bHasRootPath);
-        
     });
 
 

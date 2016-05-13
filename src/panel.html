@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Open In IntelliJ</title>
+
+    <script src="panel.js"></script>
+    <style>
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+
+            box-sizing: border-box;
+        }
+
+        .disabled {
+            -webkit-filter: grayscale(90%);
+            filter: grayscale(90%);
+            opacity: .5;
+        }
+
+        h1 {
+            font-size: 36px;
+            font-weight: bold;
+        }
+
+        h2 {
+            font-size: 29px;
+        }
+
+        #enable-container {
+            font-size: 30px;
+            margin: 20px 20px 5px 20px;
+            width: auto;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #909090;
+        }
+
+        #enable-container * {
+            vertical-align: text-bottom;
+        }
+
+        #ext-enable {
+            zoom: 3;
+            vertical-align: baseline;
+        }
+
+        #content {
+            margin: 30px 30px;
+        }
+
+        #optionslink {
+            text-decoration: underline;
+            font-size: 18px;
+            color: #303030;
+        }
+
+    </style>
+</head>
+<body>
+
+<div id="panel-main">
+    <div id="panel-content">
+        <div id="enable-container">
+            <label><input type="checkbox" id="ext-enable" value="1"> Enable Open In Intellij <img src="logo-48px.png"/> </label>
+        </div>
+        <div id="content">
+            <div id="tutorial-container">
+                <h3>How to</h3>
+                <p>...</p>
+                <p><img src="tutorial-enable.png" /></p>
+            </div>
+            <div>
+                <h3>&raquo; <a id="optionslink" href="options.html#fromdevtools">Options</a></h3>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
