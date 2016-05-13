@@ -3,18 +3,16 @@
 (function() {
 
 
-    var rootPaths = {
-        'www.eventnoted.com': 'dist/'
-
-    };
 
     var devConsoleError = function(message) {
-        chrome.devtools.inspectedWindow.eval('console.error("'+message+'");');
+        var messageJson = JSON.stringify(message);
+        messageJson = messageJson.split('\'').join('\\\'');
+        messageJson = messageJson.split('\\n').join('\\\\n');
+        var cmd = 'console.error(JSON.parse(\''+messageJson+'\'));';
+        console.log(cmd);
+        chrome.devtools.inspectedWindow.eval(cmd);
     };
 
-    var devConsoleLog = function(message) {
-        chrome.devtools.inspectedWindow.eval('console.log("'+message+'");');
-    };
 
 
     // parseUri 1.2.2
@@ -46,7 +44,7 @@
         return uri;
     };
 
-    var readURLContent = function(url) {
+    var readURLContent = function(url, thisServer, filePath, bHasRootPath) {
 
         var xhr = new XMLHttpRequest();
 
@@ -61,7 +59,12 @@
                         devConsoleError('Couldn\'t open file in IntelliJ! Please first start your IDE and open the project. (IntelliJ API Request URL: ' + url + ')');
                         break;
                     case 404:
-                        devConsoleError('Couldn\'t open file in IntelliJ! File not found. Please make sure the project is opened or specify root path. (IntelliJ API Request URL: ' + url + ')');
+                        var sErrorAdd = 'Please first open the project in your IDE.';
+                        if (!bHasRootPath) {
+                            sErrorAdd += '\nAlso make sure the file '+filePath+' can be found relative to your project root. Otherwise please map your web document root to the appropriate folder within your project. See options: chrome-extension://jeanncccmcklcoklpimhmpkgphdingci/options.html\n';
+                        }
+                        devConsoleError('Couldn\'t open file in IntelliJ: File not found! '+sErrorAdd+'\n(IntelliJ API Request URL: ' + url + ')');
+                        console.log('Couldn\'t open file in IntelliJ! File not found. '+sErrorAdd+'\n(IntelliJ API Request URL: ' + url + ')');
                         break;
                     default:
                         devConsoleError('Couldn\'t open file in IntelliJ! HTTP error ' + xhr.status + ' for IntelliJ API Request URL ' + url);
@@ -88,7 +91,8 @@
         var thisUrl = urlParse.protocol+'://'+thisServer;
 
         var regex = new RegExp(thisUrl, 'i');
-        var fileString = url.replace(regex, ''); // http://xxx aus URL löschen => nur Dateipfad erhalten
+        var filePath = url.replace(regex, ''); // http://xxx aus URL löschen => nur Dateipfad erhalten
+        var fileString = filePath;
         if (lineNumber) {
             fileString += ':' + lineNumber;
         }
@@ -97,9 +101,14 @@
             fileString = fileString.substr(1);
         }
 
+        var rootPaths = JSON.parse(localStorage["rootPaths"]) || {};
+        console.log(rootPaths);
+
+        var bHasRootPath = false;
         // nachsehen, ob wir für den aktuellen Host einen Pfad hinterlegt haben und ggf. verwenden
         if (rootPaths[thisServer]) {
             fileString = rootPaths[thisServer]+fileString;
+            bHasRootPath = true;
         }
 
         //
@@ -110,7 +119,7 @@
 
        // devConsoleLog(ideOpenUrl);
 
-        readURLContent(ideOpenUrl);
+        readURLContent(ideOpenUrl, thisServer, filePath, bHasRootPath);
         
     });
 

@@ -2,6 +2,10 @@
   "manifest_version": 2,
   "name": "Open In IntelliJ",
   "description": "Open Chrome Devtools Files in IntelliJ IDE",
-  "version": "0.2",
-  "devtools_page": "openinide.html"
+  "version": "0.3.1",
+  "devtools_page": "openinide.html",
+  "options_page": "options.html",
+  "icons": {
+    "48": "icon-48px.png",
+    "128": "icon-128px.png" }
 }
