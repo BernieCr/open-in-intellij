@@ -68,9 +68,10 @@
                 else {
                     iRetry++;
                     if (iRetry < 10) {
-                        setTimeout(checkUrlResponse, 250);
+                        setTimeout(checkUrlResponse, 125);
                     }
                     else {
+                        openInIde('ide://'+fileString);
                         chrome.devtools.inspectedWindow.eval('console.error("OpenInIde: Couldn\'t get app paths from '+thisUrl+'");');
                     }
                 }
