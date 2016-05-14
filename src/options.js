@@ -5,7 +5,7 @@
 //
 // http://julip.co/2010/01/how-to-build-a-chrome-extension-part-2-options-and-localstorage/
 
-    var iFields = 11;
+    var iFields = 9;
 
 
     function loadOptions() {
@@ -36,6 +36,15 @@
             document.getElementById('site' + i).value = (config[i] && config[i].site) || '';
             document.getElementById('root' + i).value = (config[i] && config[i].rootPath) || '';
         }
+        
+        if (!localStorage["intellijserver"]) {
+            // load default
+            localStorage["intellijserver"] = "http://localhost:63342";
+        }
+
+        if (localStorage["intellijserver"]) {
+            document.getElementById("intellijserver").value = localStorage["intellijserver"];
+        }
     }
 
     function saveOptions() {
@@ -60,9 +69,12 @@
             }
         }
 
-        console.log(rootPaths);
+       // console.log(rootPaths);
 
         localStorage["rootPaths"] = JSON.stringify(rootPaths);
+
+        localStorage["intellijserver"] = document.getElementById("intellijserver").value;
+
         loadOptions(); // reload
 
         document.getElementById('status').innerHTML = "OK!";

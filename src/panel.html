@@ -63,6 +63,10 @@
         .bordered {
             border: 1px solid #AAAAAA;
         }
+        .tutorial-img {
+
+        }
+
 
     </style>
 </head>
@@ -71,15 +75,19 @@
 <div id="panel-main">
     <div id="panel-content">
         <div id="enable-container">
-            <label><input type="checkbox" id="ext-enable" value="1"> Enable Open In Intellij <img src="logo-48px.png"/> </label>
+            <label><input type="checkbox" id="ext-enable" value="1"> Automatically open files in IntelliJ IDE <img src="logo-48px.png"/> </label>
         </div>
         <div id="content">
             <div id="tutorial-container">
                 <h3>How to</h3>
-                <p>To enable this extension, open the Developer Tools, go to Settings (F1) -&gt; General. Change the very last setting, <i>'Link Handling'</i> from <i>auto</i> to <i>Open In IntelliJ</i>
+                <h4>Automatically open files in IntelliJ</h4>
+                <p>To activate auto open, besides checking the checkbox above, you need to go to Devtools Settings (F1) -&gt; General.<br/>Change the very last setting, <i>'Link Handling'</i> from <i>auto</i> to <i>Open In IntelliJ</i>.
                 </p>
                 <p>
-                    <img src="tutorial-enable.png" class="bordered" width="200" height="auto" />
+                    <img src="tutorial-linkhandling.png" class="tutorial-img bordered" />
+                </p>
+                <p>
+                    To disable auto open again, just uncheck the above checkbox, you don't neet to change Link Handling back to <i>auto</i>.
                 </p>
                 <p></p>
             </div>

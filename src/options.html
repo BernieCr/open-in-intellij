@@ -12,14 +12,27 @@
             margin-bottom: 10px;
         }
 
+        h2 {
+            padding-top: 15px;
+        }
+
+        a {
+            text-decoration: underline;
+            color: #303030;
+        }
+
+        span {
+            vertical-align: baseline;
+        }
+
 
         .textfield {
             display: inline-block;
             margin-right: 20px;
             width: 300px;
             font-size: 14px;
-            vertical-align: top;
         }
+
 
         button {
             font-size: 16px;
@@ -40,13 +53,14 @@
 </head>
 <body>
 
-<h1><img src="logo-128px.png"/> Open In IntelliJ</h1>
+<h1><img src="logo-128px.png"/> <span>Open In IntelliJ</span></h1>
 
 <hr />
 
 <div id="main">
+    <div>
     <h2>Root Paths</h2>
-    <br/>
+    </div>
     <div>
         <span class="textfield"><b>Site (e.g. www.mysite.com)</b></span>
         <span class="textfield"><b>Relative path of web document root inside your IntelliJ project (e.g. dist/www/)</b></span>
@@ -87,21 +101,26 @@
         <input id="site8" class="textfield" type="text" placeholder="Site" />
         <input id="root8" class="textfield" type="text" placeholder="Root Path" />
     </div>
-    <div>
-        <input id="site9" class="textfield" type="text" placeholder="Site" />
-        <input id="root9" class="textfield" type="text" placeholder="Root Path" />
-    </div>
-    <div>
-        <input id="site10" class="textfield" type="text" placeholder="Site" />
-        <input id="root10" class="textfield" type="text" placeholder="Root Path" />
-    </div>
 
     <div>
-    <button id="saveOptions">Save</button><span id="status"></span>
+        <h2>IntelliJ Settings</h2>
+    </div>
+    <div>
+        <h3>Built-in Webserver URL</h3>
+        <p><input id="intellijserver" class="textfield" type="text" placeholder="http://host:port" /> <span>(Default: http://localhost:63342)</span></p>
+        <p>This extension uses the <a href="http://confluence.jetbrains.com/display/PhpStorm/Using+the+Built-in+Webserver+in+PhpStorm" target="_blank">Built-in Webserver</a> of the IntelliJ platform, which is activated by default, in combination with the <a href="http://develar.org/idea-rest-api/" target="_blank">IntelliJ  REST API</a>, to open the files.<br/>Usually you won't need to change this setting.
+        </p>
+    </div>
+
+
+    <div><br/></div>
+    <div>
+        <button id="saveOptions">Save</button><span id="status"></span>
     </div>
     <div id="backlink-container">
         <a id="backlink" href="#">&laquo; Back</a>
     </div>
+    <div><br/></div>
 </div>
 </body>
 </html>

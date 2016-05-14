@@ -7,7 +7,7 @@
         var bEnable = document.getElementById("ext-enable").checked;
 
         localStorage["enabled"] = (bEnable) ? "1" : "0";
-        document.body.className = (bEnable) ? '' : 'disabled';
+        document.getElementById("enable-container").className = (bEnable) ? '' : 'disabled';
     };
 
     document.addEventListener("DOMContentLoaded", function () {

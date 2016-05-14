@@ -3,14 +3,21 @@
 (function() {
 
 
-
-    var devConsoleError = function(message) {
-        var messageJson = JSON.stringify(message);
+    var consoleLog = function(sLogfn, args) {
+        var messageJson = JSON.stringify(args);
         messageJson = messageJson.split('\'').join('\\\'');
         messageJson = messageJson.split('\\n').join('\\\\n');
-        var cmd = 'console.error(JSON.parse(\''+messageJson+'\'));';
-        //console.log(cmd);
+        var cmd = sLogfn+'(JSON.parse(\''+messageJson+'\'));';
+
         chrome.devtools.inspectedWindow.eval(cmd);
+    };
+
+    var devConsoleError = function(message) {
+        consoleLog('console.error', message);
+    };
+
+    var devConsoleLog = function(message) {
+        consoleLog('console.log', message);
     };
 
     //console.log(localStorage["enabled"]);
@@ -100,18 +107,31 @@
     chrome.devtools.panels.create("Open In IntelliJ", "logo-48px.png", "panel.html");
     
     
-    chrome.devtools.panels.setOpenResourceHandler(function(resource, lineNumber) {
-        
+    chrome.devtools.panels.setOpenResourceHandler(function onOpenResource(resource, lineNumber) {
+
         var url = resource.url;
+        var urlParse = parseUri(url);
+
+        var bOpenInChrome = false;
 
         if (localStorage["enabled"] != "1") {
-            // disabled => Open in Chrome Resource Panel
+            // Extension disabled => Open in Chrome Resource Panel
+            bOpenInChrome = true;
+        }
+        if (urlParse.protocol == "debugger") {
+            // Links wie 'debugger:///VM1192'
+            bOpenInChrome = true;
+        }
+        if (typeof lineNumber === "undefined") {
+            // Keine Line Number => Resource wurde (höchstwahrscheinlich) über Rechtsclick->"Open Using Open In IntelliJ" geöffnet
+            //    => auf jeden Fall mit Open In IntelliJ öffnen
+            bOpenInChrome = false;
+        }
+
+        if (bOpenInChrome) {
             openInChromePanel(url, lineNumber);
         }
         else {
-
-            var urlParse = parseUri(url);
-
             var thisServer = urlParse.host + (urlParse.port ? ':' + urlParse.port : '');
             var thisUrl = urlParse.protocol + '://' + thisServer;
 
@@ -143,7 +163,7 @@
             // IntelliJ REST API!
             // http://develar.org/idea-rest-api/
             //
-            var ideOpenUrl = 'http://localhost:63342/api/file/' + fileString;
+            var ideOpenUrl = localStorage["intellijserver"] + '/api/file/' + fileString;
 
             // devConsoleLog(ideOpenUrl);
 
