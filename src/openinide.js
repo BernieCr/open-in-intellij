@@ -108,11 +108,20 @@
     
     
     chrome.devtools.panels.setOpenResourceHandler(function onOpenResource(resource, lineNumber) {
-
+        // https://developer.chrome.com/extensions/devtools_panels#method-setOpenResourceHandler
+        
         var url = resource.url;
+        
         var urlParse = parseUri(url);
 
         var bOpenInChrome = false;
+        
+        var isAbsolute = false;
+    
+        if (urlParse.protocol == "file") {
+            // Absolute path on file system (Chrome Devtools wWrkspace Mapping)
+            isAbsolute = true;
+        }
 
         if (localStorage["enabled"] != "1") {
             // Extension disabled => Open in Chrome Resource Panel
@@ -127,45 +136,60 @@
             //    => auf jeden Fall mit Open In IntelliJ öffnen
             bOpenInChrome = false;
         }
+       
 
         if (bOpenInChrome) {
             openInChromePanel(url, lineNumber);
         }
         else {
-            var thisServer = urlParse.host + (urlParse.port ? ':' + urlParse.port : '');
-            var thisUrl = urlParse.protocol + '://' + thisServer;
-
-            var regex = new RegExp(thisUrl, 'i');
-            var filePath = url.replace(regex, ''); // http://xxx aus URL löschen => nur Dateipfad erhalten
-            var fileString = filePath;
-            if (lineNumber) {
-                fileString += ':' + lineNumber;
+            var fileString = '';
+            
+            if (isAbsolute) {
+                fileString = urlParse.path;
             }
-
-            if (fileString[0] == '/') {
-                fileString = fileString.substr(1);
+            else {
+                var thisServer = urlParse.host + (urlParse.port ? ':' + urlParse.port : '');
+                var thisUrl = urlParse.protocol + '://' + thisServer;
+    
+                var regex = new RegExp(thisUrl, 'i');
+                var filePath = url.replace(regex, ''); // http://xxx aus URL löschen => nur Dateipfad erhalten
+                fileString = filePath;
+                
+                if (resource.type && resource.type == 'sm-stylesheet') { // Source mapped
+                    fileString = fileString.replace(/^(\/source\/)/,'');
+                }
+    
+                if (fileString[0] == '/') {
+                    fileString = fileString.substr(1);
+                }
+    
+                var rootPaths = {};
+                if (typeof localStorage["rootPaths"] !== "undefined") {
+                    rootPaths = JSON.parse(localStorage["rootPaths"]);
+                }
+                //console.log(rootPaths);
+    
+                var bHasRootPath = false;
+                // nachsehen, ob wir für den aktuellen Host einen Pfad hinterlegt haben und ggf. verwenden
+                if (rootPaths[thisServer]) {
+                    fileString = rootPaths[thisServer] + fileString;
+                    bHasRootPath = true;
+                }
             }
-
-            var rootPaths = {};
-            if (typeof localStorage["rootPaths"] !== "undefined") {
-                rootPaths = JSON.parse(localStorage["rootPaths"]);
-            }
-            //console.log(rootPaths);
-
-            var bHasRootPath = false;
-            // nachsehen, ob wir für den aktuellen Host einen Pfad hinterlegt haben und ggf. verwenden
-            if (rootPaths[thisServer]) {
-                fileString = rootPaths[thisServer] + fileString;
-                bHasRootPath = true;
-            }
-
+            
+            var intellijServer = localStorage["intellijserver"] || 'http://localhost:63342';
+            
             //
             // IntelliJ REST API!
             // http://develar.org/idea-rest-api/
             //
-            var ideOpenUrl = localStorage["intellijserver"] + '/api/file/' + fileString;
+            var ideOpenUrl = intellijServer + '/api/file?file=' + encodeURI(fileString);
+    
+            if (lineNumber) {
+                ideOpenUrl += '&line=' + lineNumber;
+            }
 
-            // devConsoleLog(ideOpenUrl);
+           // devConsoleLog(ideOpenUrl);
 
             readURLContent(ideOpenUrl, thisServer, filePath, bHasRootPath, url, lineNumber);
         }

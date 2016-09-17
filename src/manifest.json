@@ -3,7 +3,7 @@
   "name": "Open In IntelliJ",
   "short_name": "Open In IntelliJ",
   "description": "Open files from Chrome Devtools in IntelliJ IDEs (Webstorm, PHPStorm etc.)",
-  "version": "0.3.8",
+  "version": "0.4",
   "devtools_page": "openinide.html",
   "options_page": "options.html",
   "icons": {

@@ -30,7 +30,7 @@
             }
         }
 
-        console.log(config);
+       // console.log(config);
 
         for (var i = 0; i < iFields; i++) {
             document.getElementById('site' + i).value = (config[i] && config[i].site) || '';
