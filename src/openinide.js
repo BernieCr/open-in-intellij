@@ -19,9 +19,8 @@
     var devConsoleLog = function(message) {
         consoleLog('console.log', message);
     };
-
-    //console.log(localStorage["enabled"]);
-
+    
+    
     if (typeof localStorage["enabled"] === "undefined") {
         localStorage["enabled"] = "1"; // default
     }
@@ -62,7 +61,7 @@
 
 
     var readURLContent = function(url, thisServer, filePath, bHasRootPath, urlOrig, lineNumber) {
-
+        
         var xhr = new XMLHttpRequest();
 
         var xhrEvent = function() {
@@ -107,19 +106,23 @@
     chrome.devtools.panels.create("Open In IntelliJ", "logo-48px.png", "panel.html");
     
     
+    
+    //
+    // https://developer.chrome.com/extensions/devtools_panels#method-setOpenResourceHandler
+    //
     chrome.devtools.panels.setOpenResourceHandler(function onOpenResource(resource, lineNumber) {
-        // https://developer.chrome.com/extensions/devtools_panels#method-setOpenResourceHandler
         
         var url = resource.url;
         
         var urlParse = parseUri(url);
+       // devConsoleLog(urlParse);
 
         var bOpenInChrome = false;
         
         var isAbsolute = false;
     
         if (urlParse.protocol == "file") {
-            // Absolute path on file system (Chrome Devtools wWrkspace Mapping)
+            // Absolute path on file system (Chrome Devtools workspace mapping)
             isAbsolute = true;
         }
 
@@ -128,12 +131,12 @@
             bOpenInChrome = true;
         }
         if (urlParse.protocol == "debugger") {
-            // Links wie 'debugger:///VM1192'
+            // Links like 'debugger:///VM1192'
             bOpenInChrome = true;
         }
         if (typeof lineNumber === "undefined") {
-            // Keine Line Number => Resource wurde (höchstwahrscheinlich) über Rechtsclick->"Open Using Open In IntelliJ" geöffnet
-            //    => auf jeden Fall mit Open In IntelliJ öffnen
+            // No line number => Resource was most likely opened via right-click "Open Using Open In IntelliJ"
+            //    => force open with intellij
             bOpenInChrome = false;
         }
        
@@ -149,10 +152,9 @@
             }
             else {
                 var thisServer = urlParse.host + (urlParse.port ? ':' + urlParse.port : '');
-                var thisUrl = urlParse.protocol + '://' + thisServer;
-    
-                var regex = new RegExp(thisUrl, 'i');
-                var filePath = url.replace(regex, ''); // http://xxx aus URL löschen => nur Dateipfad erhalten
+                
+                var filePath = urlParse.path;
+                
                 fileString = filePath;
                 
                 if (resource.type && resource.type == 'sm-stylesheet') { // Source mapped
@@ -167,11 +169,10 @@
                 if (typeof localStorage["rootPaths"] !== "undefined") {
                     rootPaths = JSON.parse(localStorage["rootPaths"]);
                 }
-                //console.log(rootPaths);
     
                 var bHasRootPath = false;
-                // nachsehen, ob wir für den aktuellen Host einen Pfad hinterlegt haben und ggf. verwenden
-                if (rootPaths[thisServer]) {
+                
+                if (rootPaths[thisServer]) { // check for user path mappings
                     fileString = rootPaths[thisServer] + fileString;
                     bHasRootPath = true;
                 }
@@ -188,9 +189,7 @@
             if (lineNumber) {
                 ideOpenUrl += '&line=' + lineNumber;
             }
-
-           // devConsoleLog(ideOpenUrl);
-
+            
             readURLContent(ideOpenUrl, thisServer, filePath, bHasRootPath, url, lineNumber);
         }
     });
