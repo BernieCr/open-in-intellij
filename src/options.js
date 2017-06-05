@@ -30,8 +30,6 @@
             }
         }
 
-       // console.log(config);
-
         for (var i = 0; i < iFields; i++) {
             document.getElementById('site' + i).value = (config[i] && config[i].site) || '';
             document.getElementById('root' + i).value = (config[i] && config[i].rootPath) || '';
@@ -68,8 +66,7 @@
                 }
             }
         }
-
-       // console.log(rootPaths);
+        
 
         localStorage["rootPaths"] = JSON.stringify(rootPaths);
 
