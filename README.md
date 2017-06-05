@@ -11,8 +11,7 @@ This is an extension for Google Chrome to open resources from the Dev Tools (lik
 https://chrome.google.com/webstore/detail/open-in-intellij/gpmmlokoechmmeboecialijibkjajlaj
 
 2. Open Chrome DevTools, go to Settings. Under *Extensions* -> *Link Handling* select *Open In IntelliJ*.
-<br/>
-![Screenshot](src/tutorial-linkhandling.png)
+![Linkhandling](src/tutorial-linkhandling.png)
 
 3. Open one of your projects in your IntelliJ IDE (WebStorm, PHPStorm etc.). 
 <br/> Open the corresponding website in Chrome, inspect it, right-click on any resource and select *Open in IntelliJ*.<br/>
