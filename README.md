@@ -9,22 +9,21 @@ This is an extension for Google Chrome to open resources from the Dev Tools (lik
 
 1. Install the extension from the Chrome Web Store:<br/>
 https://chrome.google.com/webstore/detail/open-in-intellij/gpmmlokoechmmeboecialijibkjajlaj
+
+2. Open Chrome DevTools, go to Settings. Under *Extensions* -> *Link Handling* select *Open In IntelliJ*.
 <br/>
-<br/>
-2. Open Chrome DevTools, go to Settings. Under *Extensions* -> *Link Handling* select *Open In IntelliJ*.<br/>
 ![Screenshot](src/tutorial-linkhandling.png)
-<br/>
-<br/>
+
 3. Open one of your projects in your IntelliJ IDE (WebStorm, PHPStorm etc.). 
 <br/> Open the corresponding website in Chrome, inspect it, right-click on any resource and select *Open in IntelliJ*.<br/>
 Now the resource will be opened in your IDE.
-<br/>
-<br/>
+
 4. If the web root of your IntelliJ project different from your project root, you have to do one the following methods in order for this extension to work:
 	- Method 1: In IntelliJ right-click on the the directory that is the web root of the project and select *Mark directory as* -> *Sources Root*
 	- Method 2: In Chrome go to chrome://extensions/ -> Open In Intellij -> Options. Under *Root Paths* set up the path mappings for your project. For example, if your site is www.yoursite.com (live) and yoursite.priv (local)) and within your IntelliJ project the web root for this site is under dist/web/, enter those site names under *Site* and the path under *Root Path*.
 
 <br/>
+
 ## Troubleshooting
 If the links don't open in your IDE, try one or more of the following steps:
 <br/>
