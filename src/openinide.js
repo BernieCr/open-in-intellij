@@ -13,13 +13,16 @@
     };
 
     var devConsoleError = function(message) {
+        console.error(message);
         consoleLog('console.error', message);
     };
 
     var devConsoleLog = function(message) {
+        console.log(message);
         consoleLog('console.log', message);
     };
     
+    console.log('Open In IntelliJ - Extension loaded');
     
     if (typeof localStorage["enabled"] === "undefined") {
         localStorage["enabled"] = "1"; // default
@@ -62,6 +65,8 @@
 
     var readURLContent = function(url, thisServer, filePath, bHasRootPath, urlOrig, lineNumber) {
         
+        console.log('Open In IntelliJ - calling IntelliJ API:', url);
+        
         var xhr = new XMLHttpRequest();
 
         var xhrEvent = function() {
@@ -71,12 +76,15 @@
             if (xhr.readyState == XMLHttpRequest.DONE) {
                 switch (xhr.status) {
                     case 200:
+                        console.log('Open In IntelliJ - IntelliJ API response:', 'HTTP 200 OK - file opened in IntelliJ successfully');
                         bOK = true;
                         break;
                     case 0:
+                        console.log('Open In IntelliJ - IntelliJ API response:', 'Error 0');
                         devConsoleError('Couldn\'t open file in IntelliJ! Please first start your IDE and open the project.\n(IntelliJ API Request URL: ' + url + ')');
                         break;
                     case 404:
+                    console.log('Open In IntelliJ - IntelliJ API response:', 'HTTP Error 404');
                         var sErrorAdd = 'Please first open the project in your IDE.';
                         if (!bHasRootPath) {
                             sErrorAdd += '\nAlso make sure the file '+filePath+' can be found relative to your project root. Otherwise please map your web document root to the appropriate folder within your project. See options: chrome-extension://jeanncccmcklcoklpimhmpkgphdingci/options.html\n';
@@ -84,12 +92,14 @@
                         devConsoleError('Couldn\'t open file in IntelliJ: File not found! '+sErrorAdd+'\n(IntelliJ API Request URL: ' + url + ')');
                         break;
                     default:
+                        console.log('Open In IntelliJ - IntelliJ API response:', 'HTTP Error '+xhr.status);
                         devConsoleError('Couldn\'t open file in IntelliJ! HTTP error ' + xhr.status + ' for IntelliJ API Request URL ' + url);
                         break;
                 }
                 xhr = null;
 
                 if (!bOK) {
+                    console.log('Open In IntelliJ - failed, opening resource in Chrome instead');
                     openInChromePanel(urlOrig, lineNumber);
                 }
             }
@@ -111,27 +121,29 @@
     // https://developer.chrome.com/extensions/devtools_panels#method-setOpenResourceHandler
     //
     chrome.devtools.panels.setOpenResourceHandler(function onOpenResource(resource, lineNumber) {
-        
+    
         var url = resource.url;
         
+        console.log('Open In IntelliJ - received open resource event:', url, lineNumber);
+             
         var urlParse = parseUri(url);
-       // devConsoleLog(urlParse);
-
+    
         var bOpenInChrome = false;
         
         var isAbsolute = false;
     
-        if (urlParse.protocol == "file") {
+        if ((urlParse.protocol == "file") || (urlParse.path[0] == '/')) {
             // Absolute path on file system (Chrome Devtools workspace mapping)
             isAbsolute = true;
         }
 
         if (localStorage["enabled"] != "1") {
-            // Extension disabled => Open in Chrome Resource Panel
+            // Extension is disabled => Open in Chrome Resource Panel
             bOpenInChrome = true;
+            console.log('Open In IntelliJ - You disabled this extension, resources will open in Chrome. To enable this extension again click the "Open In IntelliJ" tab in the Devtools');
         }
         if (urlParse.protocol == "debugger") {
-            // Links like 'debugger:///VM1192'
+            // Links like 'debugger:///VM1192' => is internal Chrome stuff, open in Chrome
             bOpenInChrome = true;
         }
         if (typeof lineNumber === "undefined") {
@@ -139,9 +151,16 @@
             //    => force open with intellij
             bOpenInChrome = false;
         }
+         if (urlParse.protocol == "webpack") {
+            // Links like 'webpack:///./node_modules/react-dom/cjs/react-dom.development.js' or 'webpack:///(webpack)-dev-server/client?0ee4'
+             isAbsolute = true;
+             urlParse.path = urlParse.path.substr(1);
+             urlParse.path = urlParse.path.replace(/[\(\)']+/g, '');
+        }
        
 
         if (bOpenInChrome) {
+            console.log('Open In IntelliJ - opening resource in Chrome:', url, lineNumber)
             openInChromePanel(url, lineNumber);
         }
         else {
@@ -178,6 +197,8 @@
                 }
             }
             
+            console.log('Open In IntelliJ - destination resource path:', fileString);
+            
             var intellijServer = localStorage["intellijserver"] || 'http://localhost:63342';
             
             //
@@ -199,6 +220,8 @@
     var port = chrome.runtime.connect({name: 'openinintellij'});
     
     port.onMessage.addListener(function(msg) {
+        
+        console.log('Open In IntelliJ - opening file from IntelliJ in Chrome', msg);
         
         var file = 'file://'+decodeURIComponent(msg.file);
         var line = parseInt(msg.line);
