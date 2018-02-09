@@ -170,8 +170,6 @@
                 fileString = urlParse.path;
             }
             else {
-                var thisServer = urlParse.host + (urlParse.port ? ':' + urlParse.port : '');
-                
                 var filePath = urlParse.path;
                 
                 fileString = filePath;
@@ -183,18 +181,30 @@
                 if (fileString[0] == '/') {
                     fileString = fileString.substr(1);
                 }
-    
-                var rootPaths = {};
-                if (typeof localStorage["rootPaths"] !== "undefined") {
-                    rootPaths = JSON.parse(localStorage["rootPaths"]);
-                }
-    
-                var bHasRootPath = false;
-                
-                if (rootPaths[thisServer]) { // check for user path mappings
-                    fileString = rootPaths[thisServer] + fileString;
-                    bHasRootPath = true;
-                }
+            }
+            
+            var rootPaths = {};
+            if (typeof localStorage["rootPaths"] !== "undefined") {
+                rootPaths = JSON.parse(localStorage["rootPaths"]);
+            }
+
+            var bHasRootPath = false;            
+            var thisServer = urlParse.host + (urlParse.port ? ':' + urlParse.port : '');
+            
+            var foundRootPath = rootPaths[thisServer];  // check for user path mappings
+            if (!foundRootPath) {
+                thisServer = urlParse.protocol + "://" + thisServer;
+                foundRootPath = rootPaths[thisServer];
+            }
+            if (!foundRootPath) {
+                foundRootPath = rootPaths[thisServer + "/"];
+            }
+            if (!foundRootPath) {
+                foundRootPath = rootPaths[thisServer + urlParse.directory];
+            }
+            if (foundRootPath) {
+                fileString = foundRootPath.replace(/\/$/, "") + "/" + fileString.replace(/^\//,"");
+                bHasRootPath = true;
             }
             
             console.log('Open In IntelliJ - destination resource path:', fileString);

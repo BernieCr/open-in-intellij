@@ -57,11 +57,7 @@
                     if (rootPath[0] == '/') {
                         rootPath = rootPath.substr(1);
                     }
-                    if (rootPath[rootPath.length - 1] != '/') {
-                        rootPath += '/';
-                    }
 
-                    console.log(typeof rootPaths, rootPaths, site, rootPath);
                     rootPaths[site] = rootPath;
                 }
             }
