@@ -206,7 +206,12 @@
                 fileString = foundRootPath.replace(/\/$/, "") + "/" + fileString.replace(/^\//,"");
                 bHasRootPath = true;
             }
-            
+
+            // at least on Meteor projects it was not working starting with /
+            if (fileString.startsWith('/')) {
+                fileString = fileString.substring(1);
+            }
+
             console.log('Open In IntelliJ - destination resource path:', fileString);
             
             var intellijServer = localStorage["intellijserver"] || 'http://localhost:63342';
