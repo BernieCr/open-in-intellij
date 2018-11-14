@@ -3,9 +3,12 @@
   "name": "Open In IntelliJ",
   "short_name": "Open In IntelliJ",
   "description": "Open files from Chrome Devtools in IntelliJ IDEs (Webstorm, PHPStorm etc.)",
-  "version": "0.6",
+  "version": "0.8",
   "devtools_page": "openinide.html",
-  "options_page": "options.html",
+  "options_ui": {
+    "page": "options.html",
+    "open_in_tab": true
+  },
   "background": {
     "scripts": ["background.js"]
   },

@@ -20,7 +20,7 @@
     chrome.tabs.onCreated.addListener(function (tab) {
         if (tab && tab.url) {
          
-            var url = tab.url; // http://openfile/?/Users/johnny/Coding/_Tools/chrome-openinintellij/src/openinide.js&200
+            var url = tab.url; // example: http://openfile/?/Users/test/projects/src/openinide.js&200
             if (url.startsWith('http://openfile/')) {
                 
                 chrome.tabs.remove(tab.id);
