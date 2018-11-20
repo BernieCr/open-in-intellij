@@ -134,6 +134,11 @@
 
         let isAbsolute = false;
 
+        if (url.startsWith("/")) {
+            // URL is actually an absolute path on the file system
+            isAbsolute = true;
+        }
+
         if (urlParse.protocol == "file") {
             // Absolute path on file system (Chrome Devtools workspace mapping)
             isAbsolute = true;
@@ -169,7 +174,8 @@
             let fileString = filePath;
 
             if (!isAbsolute) {
-                if (resource.type && resource.type == 'sm-stylesheet') { // Source mapped
+                const isSourceMappedStylesheet = resource.type && resource.type == 'sm-stylesheet';
+                if (isSourceMappedStylesheet) {
                     fileString = fileString.replace(/^(\/source\/)/,'');
                 }
 
