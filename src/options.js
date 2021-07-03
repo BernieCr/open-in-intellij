@@ -25,7 +25,8 @@
             if (rootPaths.hasOwnProperty(site)) {
                 config.push({
                     site: site,
-                    rootPath: rootPaths[site]
+                    rootPath: rootPaths[site].rootPath,
+                    isDirect: rootPaths[site].isDirect,
                 });
             }
         }
@@ -33,6 +34,7 @@
         for (var i = 0; i < iFields; i++) {
             document.getElementById('site' + i).value = (config[i] && config[i].site) || '';
             document.getElementById('root' + i).value = (config[i] && config[i].rootPath) || '';
+            document.getElementById('isdirect' + i).checked = (config[i] && config[i].isDirect) ? 'checked' : '';
         }
         
         if (!localStorage["intellijserver"]) {
@@ -51,6 +53,7 @@
         for (var i = 0; i < iFields; i++) {
             var site = document.getElementById('site' + i).value;
             var rootPath = document.getElementById('root' + i).value;
+            var isDirect = document.getElementById('isdirect' + i).checked;
 
             if (site != '') {
                 if (rootPath != '') {
@@ -58,7 +61,10 @@
                         rootPath = rootPath.substr(1);
                     }
 
-                    rootPaths[site] = rootPath;
+                    rootPaths[site] = {
+                        'rootPath': rootPath,
+                        'isDirect': isDirect,
+                    };
                 }
             }
         }

@@ -22,6 +22,7 @@ Now the resource will be opened in your IDE.
 4. If the web root of your IntelliJ project is different from your project root, you have to do one the following methods in order for this extension to work:
 	- Method 1: In IntelliJ right-click on the the directory that is the web root of the project and select *Mark directory as* -> *Sources Root*
 	- Method 2: In Chrome go to chrome://extensions/ -> Open In Intellij -> Options. Under *Root Paths* set up the path mappings for your project. For example, if your site is www.yoursite.com (live) and yoursite.priv (local)) and within your IntelliJ project the web root for this site is under dist/web/, enter those site names under *Site* and the path under *Root Path*.
+	- Method 3: Direct Mapping. Just like Method #2 except that it replaces the entire path rather than prepend. Just tick the box "Use direct path mapping", and then you can put https://www.yoursite.com/en/css/ under *Site* and src/scss/ under *Root Path*.
 
 <br/>
 
