@@ -204,7 +204,12 @@
                 foundRootPath = rootPaths[thisServer + urlParse.directory];
             }
             if (foundRootPath) {
-                fileString = foundRootPath.replace(/\/$/, "") + "/" + fileString.replace(/^\//,"");
+                const newPath = foundRootPath.rootPath.replace(/\/$/, "") + "/";
+                if (foundRootPath.isDirect) {
+                    fileString = newPath + urlParse.file;
+                } else {
+                    fileString = newPath + fileString.replace(/^\//,"");
+                }
                 hasRootPath = true;
             }
 
